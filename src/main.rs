@@ -21,7 +21,7 @@ struct Config {
 
 #[derive(Debug)]
 enum ClientError {
-    ZeroRead(),
+    ZeroRead(String),
 }
 
 
@@ -74,19 +74,19 @@ fn read_next_line(stream: &mut TcpStream) -> io::Result<String> {
     let mut prev_byte_was_cr = false;
     loop {
         let byte = &mut vec![0u8; 1];    
-
-        // TODO: do better error handling
-        //stream.read(byte).unwrap();
-
         // bubble error up
         match stream.read(byte)  {
             Ok(read) => {
                 if read == 0 {
-                    return Err(io::Error::new(io::ErrorKind::ConnectionAborted, "Remote peer killed connection"))
+                    //return Err(ClientError::ZeroRead("Remote peer killed connection"))
+                   return Err(io::Error::new(io::ErrorKind::ConnectionAborted, "Remote peer killed connection"))
                 }
             },
             Err(e) => return Err(e),
         }
+        // We might want to keep CL RF here because we are forwarding the request
+        // or we could pass header to http crate
+        // TODO: parse with http header crate
         if byte[0] == b'\n' && prev_byte_was_cr {
             buf.pop();
             return Ok(String::from_utf8(buf).unwrap())
