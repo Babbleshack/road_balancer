@@ -1,0 +1,14 @@
+[package]
+name = "road_balancer"
+version = "0.1.0"
+authors = ["babbleshack <babbleshack@babblebase.net>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+http_header = "0.7.0"
+serde = { version = "1.0", features = ["derive"] }
+toml = "0.5"
+log = "0.4"
+simple_logger = "1.11.0"
